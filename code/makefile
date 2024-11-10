@@ -1,21 +1,18 @@
-# Compiler and flags
+# Compiler and Flags
 CXX = mpic++
-CXXFLAGS = -O2
+CXXFLAGS = -std=c++17 -O2
+LIBS = -lboost_math_c99
 
-# Target executable
-TARGET = main
-
-# Source files
+# Source files and output executable
 SRC = main.cpp
+OUT = main
 
-# Build the target
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+# Default target: build the executable
+all: $(OUT)
 
-# Run the program with mpiexec
-run: $(TARGET)
-	mpiexec -np 4 ./$(TARGET)
+$(OUT): $(SRC)
+	$(CXX) $(CXXFLAGS) -o $(OUT) $(SRC) $(LIBS)
 
-# Clean up build files
+# Clean up the compiled output
 clean:
-	rm -f $(TARGET)
+	rm -f $(OUT)
