@@ -2,8 +2,15 @@
 
 目前实现：
 
-- cross-ppi均值区间估计（MPI并行）
-- cross-ppi分位数区间估计（MPI并行）
+- cross-ppi均值区间估计（MPI并行）Bcast
+- cross-ppi分位数区间估计（MPI并行）Bcast
+- 数据集生成
+
+还想做：
+
+- 其他并行方式，如Reduce、Scatter、Gather等
+- 记录运行时间
+- 做期中汇报ppt
 
 ## 环境
 
