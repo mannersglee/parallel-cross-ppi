@@ -5,7 +5,7 @@ int main(int argc, char **argv)
     int rank, size;
 
     // Check for correct number of arguments
-    if (argc != 3)
+    if (argc != 4)
     {
         if (rank == 0)
         {
@@ -16,8 +16,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    // 记录程序开始的时间
-    auto start_time = std::chrono::high_resolution_clock::now();
+
 
     // Initialize MPI
     MPI_Init(&argc, &argv);
@@ -28,7 +27,7 @@ int main(int argc, char **argv)
     // Parse command line arguments
     std::string method = argv[1];      // "quantile" or "mean"
     double alpha = std::stod(argv[2]); // Significance level for CI
-
+    int repeat = std::stoi(argv[3]); // Number of repeats for data loading
     // Example data initialization (rank 0 initializes, then broadcasts)
     std::vector<double> Y, Y_hat, Y_hat_unlabeled;
     if (rank == 0)
@@ -36,7 +35,7 @@ int main(int argc, char **argv)
         // Y = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0};
         // Y_hat = {1.1, 2.1, 3.1, 4.1, 5.1, 6.1, 7.1, 8.1, 9.1, 10.1, 11.1, 12.1, 13.1, 14.1, 15.1};
         // Y_hat_unlabeled = {1.2, 2.2, 3.2, 4.2, 5.2, 6.2, 7.2, 8.2, 9.2, 10.2, 11.2, 12.2, 13.2, 14.2, 15.2, 16.2, 17.2, 18.2, 19.2, 20.2};
-        loadData(Y, Y_hat, Y_hat_unlabeled);
+        loadData(Y, Y_hat, Y_hat_unlabeled, repeat);
     }
 
     // Broadcast the sizes to all processes
@@ -60,6 +59,9 @@ int main(int argc, char **argv)
     MPI_Bcast(Y_hat.data(), n, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(Y_hat_unlabeled.data(), N, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+    // 记录程序开始的时间
+    auto start_time = std::chrono::high_resolution_clock::now();
+    
     // Compute the cross-ppi confidence interval based on selected method
     std::pair<double, double> ci;
     if (method == "quantile")

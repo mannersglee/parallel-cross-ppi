@@ -3,6 +3,9 @@
 # Set the alpha value
 alpha=0.05
 
+# Set repeat nums
+repeat=10
+
 # Compile the program
 make main
 
@@ -11,10 +14,10 @@ for size in {1..8}; do
     echo "Running with np=$size"
 
     # Run quantile estimation
-    mpirun -np $size ./main quantile $alpha
+    mpirun -np $size ./main quantile $alpha $repeat
 
     # Run mean estimation
-    mpirun -np $size ./main mean $alpha
+    mpirun -np $size ./main mean $alpha $repeat
 done
 
 # Clean up

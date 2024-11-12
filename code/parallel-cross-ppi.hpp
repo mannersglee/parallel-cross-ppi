@@ -30,7 +30,9 @@ double parallel_mean(const std::vector<double> &data, int rank, int size)
 
     double local_sum = partial_sum(data, start, end);
     double total_sum = 0.0;
-    MPI_Allreduce(&local_sum, &total_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    // MPI_Allreduce(&local_sum, &total_sum, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Reduce(&local_sum, &total_sum, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    // MPI_Bcast(&total_sum, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     return total_sum / n;
 }
@@ -50,7 +52,9 @@ double parallel_variance(const std::vector<double> &data, double mean, int rank,
     }
 
     double total_sum_sq_diff = 0.0;
-    MPI_Allreduce(&local_sum_sq_diff, &total_sum_sq_diff, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    // MPI_Allreduce(&local_sum_sq_diff, &total_sum_sq_diff, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    MPI_Reduce(&local_sum_sq_diff, &total_sum_sq_diff, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    // MPI_Bcast(&total_sum_sq_diff, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     return total_sum_sq_diff / (n - 1);
 }
