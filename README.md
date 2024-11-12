@@ -4,13 +4,15 @@
 
 - cross-ppi均值区间估计（MPI并行）Bcast
 - cross-ppi分位数区间估计（MPI并行）Bcast
-- 数据集生成
+- 数据集生成，扩充
+- 其他并行方式，如Reduce、Scatter、Gather等
 
 还想做：
 
-- 其他并行方式，如Reduce、Scatter、Gather等
 - 记录运行时间
 - 做期中汇报ppt
+- 探究运行时间为何没显著减少。Reduce（加不加Bcast）和Allreduce
+- cross-ppi本身的优化。再造数据集，重新划分。
 
 ## 环境
 
