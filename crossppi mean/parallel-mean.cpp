@@ -1,5 +1,4 @@
-#include "mean.hpp"
-#include <mpi.h>
+#include "parallel-mean.hpp"
 
 using namespace std;
 using namespace Eigen;
@@ -95,15 +94,27 @@ int main(int argc, char **argv)
             result_for_Rsq.insert(result_for_Rsq.end(), result_for_n.begin(), result_for_n.end());
         }
 
-        // Gather results from all processes
-        // (Since the results are in memory, we assume you will use MPI_Gather or MPI_Reduce for this)
+        // Using MPI_Allgather to collect results from all processes
+        vector<vector<string>> all_results;
+
+        // Assuming each process stores its results in result_for_Rsq
+        // Gather all results into all_results (every process gets the full result set)
+        int total_results = result_for_Rsq.size();
+        vector<int> recv_counts(size, total_results);
+        vector<int> displs(size, 0);
+
+        // Prepare a buffer to store results from all processes
+        vector<vector<string>> gathered_results;
+
+        // Gather the results from all processes
+        MPI_Allgather(&result_for_Rsq[0], total_results, MPI_CHAR, &gathered_results[0], total_results, MPI_CHAR, MPI_COMM_WORLD);
 
         // Write results to CSV file
         if (rank == 0)
         { // Only process 0 writes the file
             ofstream outfile(filename);
             outfile << "lb,ub,coverage,estimator,n,R^2\n";
-            for (const auto &row : result_for_Rsq)
+            for (const auto &row : gathered_results)
             {
                 for (size_t i = 0; i < row.size(); ++i)
                 {

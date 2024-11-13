@@ -17,4 +17,4 @@ double mu = 4;
 VectorXd beta = VectorXd::Zero(d);
 ```
 
-- parallel-mean.cpp 还未实现
+- parallel-mean.cpp 并行处理，没跑完不知道效果
